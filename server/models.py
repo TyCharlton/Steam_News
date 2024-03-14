@@ -14,18 +14,24 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String)
     username = db.Column(db.String)
     _password_hash = db.Column(db.String)
+    prof_image_url = db.Column(db.String, nullable=True)
 
 
-    @validates('name', 'email')
+    @validates('name', 'username', '_password_hash')
     def validate_name(self, key, name):
         if not name:
             raise ValueError('Name cannot be empty.')
         return name
     
-    def validate_email(self, key, email):
-        if not re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', email):
-            raise ValueError("Invalid email format")
-        return email
+    def validate_email(self, key, username):
+        if not re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', username):
+            raise ValueError("Username must be a valid email format")
+        return username
+    
+    def validate_password(self, key, password):
+        if not password:
+            raise ValueError('Password cannot be empty.')
+        return password
 
     @hybrid_property
     # this will prevent our password_hash from being returned in a request 
@@ -46,3 +52,41 @@ class User(db.Model, SerializerMixin):
     # this prevents that Exception being raised everytime we try to call the 
     # .to_dict() method in a request that returns information from users
     serialize_rules = ('-_password_hash', )
+
+
+class Game (db.Model, SerializerMixin):
+    __tablename__ = 'games'
+
+    id = db.Column(db.Integer, primary_key = True)
+    appid = db.Column(db.Integer, nullable=False)
+    game_title = db.Column(db.String, nullable=False)
+    game_desc = db.Column(db.String, nullable=False)
+    game_image = db.Column(db.String, nullable=False)
+
+    # relatonship with news and comments
+
+class News (db.Model, SerializerMixin):
+    __tablename__ = 'news'
+
+    id = db.Column(db.Integer, primary_key = True)
+    app_id = db.Column(db.Integer, nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id') nullable=False)
+    news_title = db.Column(db.String, nullable=False)
+    news_desc = db.Column(db.String, nullable=False)
+    game_url = db.Column(db.String, nullable=False)
+    news_author = db.Column(db.String, nullable=False)
+    news_date = db.Column(db.DateTime, nullable=False)
+
+# relationship with game
+    
+class Comments (db.Model, SerializerMixin):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key = True)
+    comment_desc = db.Column(db.String, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable= False)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable= False)
+
+#relationship with user and games
+
+    
