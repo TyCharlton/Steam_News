@@ -1,6 +1,8 @@
 #Remote library imports
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.hybrid import hybrid_property
+from sqlalchemy.orm import validates
+import re
 
 #Local imports
 from config import db, bcrypt
@@ -12,6 +14,18 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String)
     username = db.Column(db.String)
     _password_hash = db.Column(db.String)
+
+
+    @validates('name', 'email')
+    def validate_name(self, key, name):
+        if not name:
+            raise ValueError('Name cannot be empty.')
+        return name
+    
+    def validate_email(self, key, email):
+        if not re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', email):
+            raise ValueError("Invalid email format")
+        return email
 
     @hybrid_property
     # this will prevent our password_hash from being returned in a request 
