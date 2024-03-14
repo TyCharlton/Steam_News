@@ -11,7 +11,7 @@ from config import app, db, api
 # Add your model imports
 
 
-# Views go here! 11
+# Views go here!
 
 @app.route('/')
 def index():
