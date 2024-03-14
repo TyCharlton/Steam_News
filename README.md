@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+![![alt text](<Screenshot 2024-03-14 at 2.49.15 PM (2).png>)](ERD.png)
 
 # Phase 4 Full-Stack Application Project Template
 
