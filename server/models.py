@@ -74,7 +74,7 @@ class News (db.Model, SerializerMixin):
 
     id = db.Column(db.Integer, primary_key = True)
     app_id = db.Column(db.Integer, nullable=False)
-    game_id = db.Column(db.Integer, db.ForeignKey('games.id') nullable=False)
+    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable= False)
     news_title = db.Column(db.String, nullable=False)
     news_desc = db.Column(db.String, nullable=False)
     game_url = db.Column(db.String, nullable=False)
@@ -96,7 +96,7 @@ class Comments (db.Model, SerializerMixin):
     user = db.relationship('User', back_populates='comments')
     game = db.relationship('Game', back_populates='comments')
 
-    serialize_rules = ('-comments.user', '-comments.game')
+    serialize_rules = ('-comments.user', '-comments.game') 
 
 
     
