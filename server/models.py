@@ -16,6 +16,8 @@ class User(db.Model, SerializerMixin):
     _password_hash = db.Column(db.String)
     prof_image_url = db.Column(db.String, nullable=True)
 
+    comments = db.relationship('Comments', back_populates = 'user')
+
 
     @validates('name', 'username', '_password_hash')
     def validate_name(self, key, name):
@@ -63,7 +65,8 @@ class Game (db.Model, SerializerMixin):
     game_desc = db.Column(db.String, nullable=False)
     game_image = db.Column(db.String, nullable=False)
 
-    # relatonship with news and comments
+    news = db.relationship('News', back_populates='game')
+    comments = db.relationship('Comments', back_populates='game')
 
 class News (db.Model, SerializerMixin):
     __tablename__ = 'news'
@@ -77,7 +80,7 @@ class News (db.Model, SerializerMixin):
     news_author = db.Column(db.String, nullable=False)
     news_date = db.Column(db.DateTime, nullable=False)
 
-# relationship with game
+    game = db.relationship('Game', back_populates='news')
     
 class Comments (db.Model, SerializerMixin):
     __tablename__ = 'comments'
@@ -87,6 +90,8 @@ class Comments (db.Model, SerializerMixin):
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable= False)
     game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable= False)
 
-#relationship with user and games
+    user = db.relationship('User', back_populates='comments')
+    game = db.relationship('Game', back_populates='comments')
+
 
     
