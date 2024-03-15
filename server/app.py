@@ -19,8 +19,8 @@ class CheckSession(Resource):
 
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 
-class Signup(Resource):
-    
+class CreateAccount(Resource):
+
     def post(self):
         json = request.get_json()
         try:
@@ -39,8 +39,9 @@ class Signup(Resource):
 
         except Exception as e:
             return make_response({'errors': str(e)}, 422)
-    
-api.add_resource(Signup, '/signup', endpoint='signup')
+
+api.add_resource(CreateAccount, '/createaccount', endpoint='createaccount')
+
 
 class Login(Resource):
 
