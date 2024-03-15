@@ -19,6 +19,7 @@ class User(db.Model, SerializerMixin):
     comments = db.relationship('Comments', back_populates = 'user')
 
 
+
     @validates('name', 'username', '_password_hash')
     def validate_name(self, key, name):
         if not name:
@@ -53,7 +54,7 @@ class User(db.Model, SerializerMixin):
     
     # this prevents that Exception being raised everytime we try to call the 
     # .to_dict() method in a request that returns information from users
-    serialize_rules = ('-_password_hash', )
+    serialize_rules = ('-_password_hash', '-comments.user' )
 
 
 class Game (db.Model, SerializerMixin):
@@ -81,6 +82,8 @@ class News (db.Model, SerializerMixin):
     news_date = db.Column(db.DateTime, nullable=False)
 
     game = db.relationship('Game', back_populates='news')
+
+    serialize_rules = ('-news.game', )
     
 class Comments (db.Model, SerializerMixin):
     __tablename__ = 'comments'
@@ -92,6 +95,8 @@ class Comments (db.Model, SerializerMixin):
 
     user = db.relationship('User', back_populates='comments')
     game = db.relationship('Game', back_populates='comments')
+
+    serialize_rules = ('-comments.user', '-comments.game')
 
 
     
