@@ -170,7 +170,6 @@ def get_news_for_app(appid):
             news_date = datetime.utcfromtimestamp(item.get('date', 0)) 
             game = Game.query.filter_by(appid=appid).first()
             if game:
-                # Check if the news item already exists in the database
                 existing_news = News.query.filter_by(
                     app_id=appid,
                     news_title=item.get('title', ''),
@@ -178,7 +177,6 @@ def get_news_for_app(appid):
                     news_date=news_date
                 ).first()
                 if not existing_news:
-                    # If the news item doesn't exist, add it to the database
                     news = News(
                         app_id=appid,
                         game_id=game.id, 

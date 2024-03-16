@@ -52,13 +52,8 @@ if __name__ == '__main__':
     with app.app_context():
         print("Starting seed...")
 
-        # Seed users
         users = seed_users()
-        
-        # Seed games from Steam API
         games = seed_games()
-
-        # Seed comments
         comments = seed_comments()
 
         db.create_all()
