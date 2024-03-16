@@ -18,7 +18,7 @@ def seed_users(num_users=10):
             name=fake.name(),
             username=fake.user_name(),
             _password_hash=fake.password(),
-            prof_image_url=fake.image_url(),  # Generate fake image URL
+            prof_image_url=fake.image_url(),  
         )
         users.append(user)
     return users
@@ -42,8 +42,8 @@ def seed_comments(num_comments=10):
     for _ in range(num_comments):
         comment = Comments(
             comment_desc=fake.text(),
-            user_id=fake.random_int(min=1, max=10),  # Assuming 10 users are seeded
-            game_id=fake.random_int(min=1, max=10000),  # Assuming 10000 games are seeded
+            user_id=fake.random_int(min=1, max=10),  
+            game_id=fake.random_int(min=1, max=10000),  
         )
         comments.append(comment)
     return comments

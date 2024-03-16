@@ -62,9 +62,7 @@ class Game (db.Model, SerializerMixin):
     news = db.relationship('News', back_populates='game')
     comments = db.relationship('Comments', back_populates='game')
 
-    @classmethod
-    def get_by_appid(cls, appid):
-        return cls.query.filter_by(appid=appid).all()
+
 
 
 class News (db.Model, SerializerMixin):
