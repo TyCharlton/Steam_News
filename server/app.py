@@ -2,7 +2,9 @@
 from flask import Flask, request, make_response, session, jsonify
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from datetime import datetime
 import os
+import requests
 
 
 # Local imports
@@ -12,7 +14,8 @@ from models import *
 
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get(
-    "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+    "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'instance/app.db')}")
+
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
@@ -108,6 +111,86 @@ def get_game(id):
     if game is None:
         return make_response(jsonify({'error': 'Game not found'}), 404)
     return make_response(jsonify(game.to_dict()), 200)
+
+@app.route('/comments', methods=['GET', 'POST'])
+def comments():
+    if request.method == 'GET':
+        comments = Comments.query.all()
+        comments_list = [comment.to_dict() for comment in comments]
+        return make_response(jsonify(comments_list), 200)
+    elif request.method == 'POST':
+        json = request.get_json()
+        comment = Comments(
+            user_id=session.get('user_id'),
+            game_id=json['game_id'],
+            comment=json['comment']
+        )
+        db.session.add(comment)
+        db.session.commit()
+        return make_response(jsonify(comment.to_dict()), 201)
+    else:
+        return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
+
+@app.route('/comments/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+def get_comment(id):
+    if request.method == 'GET':
+        comment = Comments.query.get(id)
+        if comment is None:
+            return make_response(jsonify({'error': 'Comment not found'}), 404)
+        return make_response(jsonify(comment.to_dict()), 200)
+    elif request.method == 'PATCH':
+        comment = Comments.query.get(id)
+        if comment is None:
+            return make_response(jsonify({'error': 'Comment not found'}), 404)
+        json = request.get_json()
+        for key, value in json.items():
+            setattr(comment, key, value)
+        db.session.commit()
+        return make_response(jsonify(comment.to_dict()), 200)
+    elif request.method == 'DELETE':
+        comment = Comments.query.get(id)
+        if comment is None:
+            return make_response(jsonify({'error': 'Comment not found'}), 404)
+        db.session.delete(comment)
+        db.session.commit()
+        return make_response({}, 204)
+    else:
+        return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
+    
+
+@app.route('/news/<int:appid>', methods=['GET'])
+def get_news_for_app(appid):
+    url = f'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count=3&maxlength=300&format=json'
+    response = requests.get(url)
+    if response.status_code == 200:
+        news_data = response.json().get('appnews', {}).get('newsitems', [])
+        for item in news_data:
+            news_date = datetime.utcfromtimestamp(item.get('date', 0)) 
+            game = Game.query.filter_by(appid=appid).first()
+            if game:
+                news = News(
+                    app_id=appid,
+                    game_id=game.id, 
+                    news_title=item.get('title', ''),
+                    news_desc=item.get('contents', ''),
+                    game_url=item.get('url', ''),
+                    news_author=item.get('author', ''),
+                    news_date=news_date
+                )
+                db.session.add(news)
+        db.session.commit()
+        return make_response(jsonify({'message': 'News updated successfully'}), 200)
+    else:
+        return make_response(jsonify({'error': 'Failed to fetch news'}), 500)
+
+
+
+
+
+
+
 
 
 if __name__ == '__main__':
