@@ -1,10 +1,28 @@
 # Remote library imports
-from flask import request, make_response, session
-from flask_restful import Resource
+from flask import Flask, request, make_response, session, jsonify
+from flask_restful import Api, Resource
+from flask_migrate import Migrate
+import os
+
 
 # Local imports
 from config import app, db, api
 from models import *
+
+
+BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+DATABASE = os.environ.get(
+    "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'app.db')}")
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.json.compact = False
+
+migrate = Migrate(app, db)
+
+db.init_app(app)
+
 
 class CheckSession(Resource):
     # this allows a user to stay logged in to the site even after refresh
@@ -76,6 +94,20 @@ class Logout(Resource):
         return {}, 204
     
 api.add_resource(Logout, '/logout', endpoint='logout')
+
+@app.route('/games', methods=['GET'])
+def get_games():
+    games = Game.query.all()
+    games_data = [game.to_dict() for game in games]
+    response = make_response(jsonify(games_data), 200)
+    return response
+
+@app.route('/games/<int:id>', methods=['GET'])
+def get_game(id):
+    game = Game.query.get(id)
+    if game is None:
+        return make_response(jsonify({'error': 'Game not found'}), 404)
+    return make_response(jsonify(game.to_dict()), 200)
 
 
 if __name__ == '__main__':
