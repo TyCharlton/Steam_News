@@ -14,6 +14,26 @@ function Home() {
     setSearchQuery(''); 
   };
 
+  // Potential search logic.
+
+//   const handleSubmit = async (event) => {
+//     event.preventDefault();
+//     try {
+//       const response = await fetch(`/news/${searchQuery}`);
+//       if (response.ok) {
+//         const data = await response.json();
+//         console.log('News data:', data);
+//         // Process the news data as needed
+//       } else {
+//         console.error('Failed to fetch news:', response.statusText);
+//       }
+//     } catch (error) {
+//       console.error('Error fetching news:', error);
+//     }
+//     setSearchQuery('');
+//   };
+  
+
   return (
     <div>
       <div className="search_bar">
