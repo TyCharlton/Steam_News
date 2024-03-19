@@ -5,17 +5,15 @@ from flask_migrate import Migrate
 from datetime import datetime
 import os
 import requests
-
+from flask_cors import CORS
 
 # Local imports
 from config import app, db, api
 from models import *
 
-
 BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 DATABASE = os.environ.get(
     "DB_URI", f"sqlite:///{os.path.join(BASE_DIR, 'instance/app.db')}")
-
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
@@ -25,7 +23,7 @@ app.json.compact = False
 migrate = Migrate(app, db)
 
 db.init_app(app)
-
+CORS(app)
 
 class CheckSession(Resource):
     # this allows a user to stay logged in to the site even after refresh
@@ -158,39 +156,57 @@ def get_comment(id):
     else:
         return make_response(jsonify({'error': 'Method not allowed'}), 405)
 
-    
+
+@app.route('/news', methods=['GET'])
+def get_news():
+    news = News.query.all()
+    news_data = [news.to_dict() for news in news]
+    response = make_response(jsonify(news_data), 200)
+    return response
 
 @app.route('/news/<int:appid>', methods=['GET'])
 def get_news_for_app(appid):
-    url = f'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count=3&maxlength=300&format=json'
-    response = requests.get(url)
-    if response.status_code == 200:
-        news_data = response.json().get('appnews', {}).get('newsitems', [])
-        for item in news_data:
-            news_date = datetime.utcfromtimestamp(item.get('date', 0)) 
-            game = Game.query.filter_by(appid=appid).first()
-            if game:
-                existing_news = News.query.filter_by(
-                    app_id=appid,
-                    news_title=item.get('title', ''),
-                    news_desc=item.get('contents', ''),
-                    news_date=news_date
-                ).first()
-                if not existing_news:
-                    news = News(
+    # Check if the news for the appid is already in the database
+    news = News.query.filter_by(app_id=appid).order_by(News.news_date.desc()).first()
+
+    if news:
+        # Return the latest news for the appid from the database
+        return make_response(jsonify(news.to_dict()), 200)
+    else:
+        # If news for the appid is not in the database, fetch it from the Steam API
+        url = f'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count=3&maxlength=300&format=json'
+        response = requests.get(url)
+        
+        if response.status_code == 200:
+            news_data = response.json().get('appnews', {}).get('newsitems', [])
+            for item in news_data:
+                news_date = datetime.utcfromtimestamp(item.get('date', 0)) 
+                game = Game.query.filter_by(appid=appid).first()
+                if game:
+                    existing_news = News.query.filter_by(
                         app_id=appid,
-                        game_id=game.id, 
                         news_title=item.get('title', ''),
                         news_desc=item.get('contents', ''),
-                        game_url=item.get('url', ''),
-                        news_author=item.get('author', ''),
                         news_date=news_date
-                    )
-                    db.session.add(news)
-        db.session.commit()
-        return make_response(jsonify({'message': 'News updated successfully'}), 200)
-    else:
-        return make_response(jsonify({'error': 'Failed to fetch news'}), 500)
+                    ).first()
+                    if not existing_news:
+                        news = News(
+                            app_id=appid,
+                            game_id=game.id, 
+                            news_title=item.get('title', ''),
+                            news_desc=item.get('contents', ''),
+                            game_url=item.get('url', ''),
+                            news_author=item.get('author', ''),
+                            news_date=news_date
+                        )
+                        db.session.add(news)
+            db.session.commit()
+            
+            # Return the latest news for the appid from the Steam API
+            return make_response(jsonify({'message': 'News updated successfully'}), 200)
+        else:
+            return make_response(jsonify({'error': 'Failed to fetch news'}), 500)
+
 
 
 

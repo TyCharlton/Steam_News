@@ -79,7 +79,7 @@ class News (db.Model, SerializerMixin):
 
     game = db.relationship('Game', back_populates='news')
 
-    serialize_rules = ('-news.game', )
+    serialize_rules = ('-game.news', )
     
 class Comments(db.Model, SerializerMixin):
     __tablename__ = 'comments'
