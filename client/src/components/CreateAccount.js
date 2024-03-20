@@ -22,7 +22,6 @@ function CreateAccount() {
         }),
       });
       if (response.ok) {
-        // Account created successfully, you can redirect or show a success message
         console.log('Account created successfully');
       } else {
         console.error('Failed to create account:', response.statusText);

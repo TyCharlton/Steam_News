@@ -13,9 +13,8 @@ function Home() {
     event.preventDefault();
     if (!searchQuery.trim() || isNaN(searchQuery)) {
       console.error('Invalid search query:', searchQuery);
-      // Display an error message or handle the invalid search query
     } else {
-      history.push(`/news/${searchQuery}`); // Direct to SteamNews component with search query
+      history.push(`/news/${searchQuery}`);
     }
   };
 

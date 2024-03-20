@@ -7,10 +7,12 @@ import CreateAccount from './CreateAccount';
 import Login from './Login';
 import Settings from './Settings';
 import SteamNews from './SteamNews';
+import UserContext from './UserContext.Js';
 
 function App() {
   return (
     <div className="app_div">
+      <UserContext.Provider>
       <Router>
         <Header />
         <Switch>
@@ -21,6 +23,7 @@ function App() {
           <Route path="/settings" component={Settings} />
         </Switch>
       </Router>
+      </UserContext.Provider>
     </div>
   );
 }

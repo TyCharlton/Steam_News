@@ -32,6 +32,7 @@ def seed_games():
         game = Game(
             appid=game_data['appid'],
             game_title=game_data['name'],
+            
         )
         games.append(game)
     return games
