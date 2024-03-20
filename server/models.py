@@ -52,15 +52,17 @@ class User(db.Model, SerializerMixin):
     serialize_rules = ('-_password_hash', '-comments.user')
 
 
-class Game (db.Model, SerializerMixin):
+class Game(db.Model, SerializerMixin):
     __tablename__ = 'games'
 
-    id = db.Column(db.Integer, primary_key = True)
+    id = db.Column(db.Integer, primary_key=True)
     appid = db.Column(db.Integer, nullable=False)
     game_title = db.Column(db.String, nullable=False)
+    image_url = db.Column(db.String, nullable=True)  
 
     news = db.relationship('News', back_populates='game')
     comments = db.relationship('Comments', back_populates='game')
+
 
 
 
