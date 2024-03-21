@@ -3,7 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { Formik, Form, useField } from 'formik';
 import * as Yup from 'yup';
 
-
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -20,7 +19,9 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
       if (response.ok) {
-        navigate('/'); // Redirect to home page after successful login
+        const userData = await response.json();
+        sessionStorage.setItem('currentUser', JSON.stringify(userData));
+        navigate('/');
       } else {
         console.error('Login failed:', response.statusText);
       }
