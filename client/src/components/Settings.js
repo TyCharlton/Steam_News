@@ -20,7 +20,6 @@ function Settings() {
         })
       });
       if (response.ok) {
-        // Optionally, you can update the user context with the new user info here
       } else {
         console.error('Failed to update user info');
       }

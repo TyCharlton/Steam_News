@@ -37,12 +37,16 @@ function Header() {
             <li>
               <Link to="/login">Login</Link>
             </li>
-            <li>
-              <Link to="/settings">Settings</Link>
-            </li>
-            <li>
-              <Link to="/logout">Logout</Link>
-            </li>
+            {currentUser && Object.keys(currentUser).length !== 0 && (
+              <>
+                <li>
+                  <Link to="/settings">Settings</Link>
+                </li>
+                <li>
+                  <Link to="/logout">Logout</Link>
+                </li>
+              </>
+            )}
           </ul>
         </div>
       )}
