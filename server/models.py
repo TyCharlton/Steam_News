@@ -19,21 +19,21 @@ class User(db.Model, SerializerMixin):
 
     comments = db.relationship('Comments', back_populates='user')
 
-    @validates('name', 'username', '_password_hash')
-    def validate_name(self, key, name):
-        if not name:
-            raise ValueError('Name cannot be empty.')
-        return name
+    # @validates('name', 'username', '_password_hash')
+    # def validate_name(self, key, name):
+    #     if not name:
+    #         raise ValueError('Name cannot be empty.')
+    #     return name
 
-    def validate_email(self, key, username):
-        if not re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', username):
-            raise ValueError("Username must be a valid email format")
-        return username
+    # def validate_email(self, key, username):
+    #     if not re.match(r'^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$', username):
+    #         raise ValueError("Username must be a valid email format")
+    #     return username
 
-    def validate_password(self, key, password):
-        if not password:
-            raise ValueError('Password cannot be empty.')
-        return password
+    # def validate_password(self, key, password):
+    #     if not password:
+    #         raise ValueError('Password cannot be empty.')
+    #     return password
 
     @hybrid_property
     def password_hash(self):

@@ -77,13 +77,18 @@ function SteamNews() {
                 const data = await commentResponse.json();
                 setComments([...comments, data]);
                 setComment('');
-            } else {
+            } else if (response.status === 401) {
                 console.error('User is not logged in');
+                // Handle unauthorized user (e.g., redirect to login page)
+            } else {
+                throw new Error('Failed to check session');
             }
         } catch (error) {
             console.error('Failed to add comment:', error);
         }
     };
+    
+    
     
     
 
