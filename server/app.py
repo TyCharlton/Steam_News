@@ -22,9 +22,14 @@ app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.json.compact = False
 
 migrate = Migrate(app, db)
+api = Api(app)
 
 db.init_app(app)
 CORS(app)
+
+from flask_restful import Resource, Api
+
+api = Api(app)
 
 class CheckSession(Resource):
     # this allows a user to stay logged in to the site even after refresh
@@ -38,6 +43,7 @@ class CheckSession(Resource):
             return make_response(user.to_dict(), 200)
 
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
+
 
 @app.route('/createaccount', methods=['POST', 'OPTIONS'])
 def create_account():
@@ -67,22 +73,29 @@ def create_account():
 
 
 
-@app.route('/login', methods=['POST'])
-def login():
-    data = request.get_json()
-    username = data.get('username')
-    password = data.get('password')
+class Login(Resource):
+    def post(self):
+        username = request.get_json()['username']
 
-    if not username or not password:
-        return make_response(jsonify({'error': 'Username and password are required'}), 400)
+        user = User.query.filter(User.username == username).first()
+        password = request.get_json()['password']
 
-    user = User.query.filter_by(username=username).first()
+        if not user:
+            response_body = {'error': 'User not found.'}
+            status = 404
 
-    if not user or not user.authenticate(password):
-        return make_response(jsonify({'error': 'Invalid username or password'}), 401)
+        else:
+            if user.authenticate(password):
+                session['user_id'] = user.id
+                response_body = user.to_dict()
+                status = 200
+            else:
+                response_body = {'error': 'Invalid username or password'}
+                status = 401
 
-    session['user_id'] = user.id
-    return make_response(jsonify(user.to_dict()), 200)
+        return make_response(response_body, status)
+
+api.add_resource(Login, '/login', endpoint='login')
 
 
 class Logout(Resource):
@@ -93,14 +106,12 @@ class Logout(Resource):
     
 api.add_resource(Logout, '/logout', endpoint='logout')
 
-# allowed_endpoints = ['createaccount', 'login', 'logout', 'check_session', 'get_games', 'get_game', 'comments', 'news', 'steamnews', 'games']
+# allowed_endpoints = ['create_account', 'login', 'logout', 'check_session', 'get_games', 'get_game', 'comments', 'news', 'steamnews', 'games']
 # @app.before_request
 # def check_if_logged_in():
-#     if request.method == "OPTIONS":
-#         # Allow OPTIONS requests to pass through without authentication
-#         return None  # Returning None allows the request to continue to the intended route
 #     if not session.get('user_id') and request.endpoint not in allowed_endpoints:
 #         return {'error': 'Unauthorized'}, 401
+
 
 
 
@@ -125,11 +136,11 @@ def comments():
         comments_list = [comment.to_dict() for comment in comments]
         return make_response(jsonify(comments_list), 200)
     elif request.method == 'POST':
-        json = request.get_json()
         user_id = session.get('user_id')
         if user_id is None:
             return make_response(jsonify({'error': 'Unauthorized: you must be logged in to make that request'}), 401)
         
+        json = request.get_json()
         comment = Comments(
             user_id=user_id,
             game_id=json['game_id'],
@@ -140,6 +151,7 @@ def comments():
         return make_response(jsonify(comment.to_dict()), 201)
     else:
         return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
 
 
 

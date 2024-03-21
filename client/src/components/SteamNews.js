@@ -59,26 +59,33 @@ function SteamNews() {
 
     const handleAddComment = async () => {
         try {
-            const response = await fetch('http://127.0.0.1:5555/comments', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    game_id: news?.game_id,
-                    comment: comment
-                })
-            });
-            if (!response.ok) {
-                throw new Error('Failed to add comment');
+            const response = await fetch('http://localhost:5555/check_session');
+            if (response.ok) {
+                const commentResponse = await fetch('http://localhost:5555/comments', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        game_id: news?.game_id,
+                        comment: comment
+                    })
+                });
+                if (!commentResponse.ok) {
+                    throw new Error('Failed to add comment');
+                }
+                const data = await commentResponse.json();
+                setComments([...comments, data]);
+                setComment('');
+            } else {
+                console.error('User is not logged in');
             }
-            const data = await response.json();
-            setComments([...comments, data]);
-            setComment('');
         } catch (error) {
             console.error('Failed to add comment:', error);
         }
     };
+    
+    
 
     const handleDeleteComment = async (id) => {
         try {

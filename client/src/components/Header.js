@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { GiHamburgerMenu } from 'react-icons/gi';
 import { Link } from 'react-router-dom';
+import { useUser } from './UserContext';
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { currentUser } = useUser();
 
   const toggleMenu = () => {
     setMenuOpen(!menuOpen);
@@ -19,6 +21,7 @@ function Header() {
           "Powered by Steam API"
         </span>
       </h1>
+      {currentUser && Object.keys(currentUser).length !== 0 && <div>Hi, {currentUser.name}</div>}
       <div className="menu_icon" onClick={toggleMenu}>
         <GiHamburgerMenu />
       </div>
@@ -36,6 +39,9 @@ function Header() {
             </li>
             <li>
               <Link to="/settings">Settings</Link>
+            </li>
+            <li>
+              <Link to="/logout">Logout</Link>
             </li>
           </ul>
         </div>

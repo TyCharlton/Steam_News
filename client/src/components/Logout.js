@@ -3,21 +3,24 @@ import { useNavigate } from 'react-router-dom';
 import UserContext from './UserContext';
 
 function Logout() {
-  const { setCurrentUser } = useContext(UserContext);
+  const { currentUser, setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   const handleLogout = () => {
-    sessionStorage.removeItem('currentUser');
-    setCurrentUser({});
-    navigate('/'); 
+    if (currentUser.id) {
+      sessionStorage.removeItem('currentUser');
+      setCurrentUser({});
+      alert('Logout success');
+      navigate('/');
+    } else {
+      alert('User not logged in');
+    }
   };
 
   return (
-    <div>
-      <h2>Logout</h2>
-      <p>Are you sure you want to logout?</p>
-      <button onClick={handleLogout}>Logout</button>
-    </div>
+    <button onClick={handleLogout} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
+      Logout
+    </button>
   );
 }
 

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Formik, Form, useField } from 'formik';
-import * as Yup from 'yup';
+import { useUser } from './UserContext';
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [alertMessage, setAlertMessage] = useState('');
   const navigate = useNavigate();
+  const { setCurrentUser } = useUser();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -21,7 +22,9 @@ function Login() {
       if (response.ok) {
         const userData = await response.json();
         sessionStorage.setItem('currentUser', JSON.stringify(userData));
+        setCurrentUser(userData);
         navigate('/');
+        setAlertMessage('Login successful');
       } else {
         console.error('Login failed:', response.statusText);
       }
@@ -33,6 +36,7 @@ function Login() {
   return (
     <div>
       <h2>Login</h2>
+      {alertMessage && <div className="alert">{alertMessage}</div>}
       <form onSubmit={handleSubmit}>
         <label>
           Username:
