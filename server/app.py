@@ -243,22 +243,30 @@ def get_all_users():
     return make_response(jsonify(user_list), 200)
 
 
-@app.route('/user/<int:id>', methods=['GET', 'DELETE'])
-def get_or_delete_user(id):
+@app.route('/user/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
+def get_update_or_delete_user(id):
+    user = User.query.get(id)
+    if user is None:
+        return make_response(jsonify({'error': 'User not found'}), 404)
+
     if request.method == 'GET':
-        user = User.query.get(id)
-        if user is None:
-            return make_response(jsonify({'error': 'User not found'}), 404)
+        return make_response(jsonify(user.to_dict()), 200)
+    elif request.method == 'PATCH':
+        json = request.get_json()
+        if 'name' in json:
+            user.name = json['name']
+        if 'prof_image_url' in json:
+            user.prof_image_url = json['prof_image_url']
+        db.session.commit()
         return make_response(jsonify(user.to_dict()), 200)
     elif request.method == 'DELETE':
-        user = User.query.get(id)
-        if user is None:
-            return make_response(jsonify({'error': 'User not found'}), 404)
         db.session.delete(user)
         db.session.commit()
         return make_response({}, 204)
     else:
         return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
+
 
 
 
