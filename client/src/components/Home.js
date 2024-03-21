@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 function Home() {
   const [searchQuery, setSearchQuery] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
@@ -14,7 +14,7 @@ function Home() {
     if (!searchQuery.trim() || isNaN(searchQuery)) {
       console.error('Invalid search query:', searchQuery);
     } else {
-      history.push(`/news/${searchQuery}`);
+      navigate(`/news/${searchQuery}`);
     }
   };
 

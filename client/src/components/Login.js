@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { Formik, Form, useField } from 'formik';
+import * as Yup from 'yup';
+
 
 function Login() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -17,7 +20,7 @@ function Login() {
         body: JSON.stringify({ username, password }),
       });
       if (response.ok) {
-        history.push('/'); // Redirect to home page after successful login
+        navigate('/'); // Redirect to home page after successful login
       } else {
         console.error('Login failed:', response.statusText);
       }
