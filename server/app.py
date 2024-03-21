@@ -18,6 +18,7 @@ DATABASE = os.environ.get(
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DATABASE
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+app.config['SECRET_KEY'] = 'your_secret_key_here'
 app.json.compact = False
 
 migrate = Migrate(app, db)
@@ -38,55 +39,51 @@ class CheckSession(Resource):
 
 api.add_resource(CheckSession, '/check_session', endpoint='check_session')
 
-class CreateAccount(Resource):
-
-    def post(self):
+@app.route('/createaccount', methods=['POST', 'OPTIONS'])
+def create_account():
+    if request.method == 'OPTIONS':
+        response = make_response()
+        response.headers.add('Access-Control-Allow-Origin', 'http://localhost:3000')
+        response.headers.add('Access-Control-Allow-Headers', 'Content-Type')
+        response.headers.add('Access-Control-Allow-Methods', 'POST')
+        return response
+    elif request.method == 'POST':
         json = request.get_json()
         try:
             user = User(
                 username=json['username'],
                 name=json['name'],
+                prof_image_url=json['prof_image_url'],
             )
             user.password_hash = json['password']
             db.session.add(user)
             db.session.commit()
-            # this line will and the user_id to your session, essentially
-            # signing them into your site automatically on signup
             session['user_id'] = user.id
-
             return make_response(user.to_dict(), 201)
-
         except Exception as e:
             return make_response({'errors': str(e)}, 422)
+    else:
+        return make_response({'error': 'Method not allowed'}, 405)
 
-api.add_resource(CreateAccount, '/createaccount', endpoint='createaccount')
 
 
-class Login(Resource):
+@app.route('/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    username = data.get('username')
+    password = data.get('password')
 
-    def post(self):
-        username = request.get_json()['username']
+    if not username or not password:
+        return make_response(jsonify({'error': 'Username and password are required'}), 400)
 
-        user = User.query.filter(User.username == username).first()
-        password = request.get_json()['password']
+    user = User.query.filter_by(username=username).first()
 
-        if not user:
-            response_body = {'error': 'User not found'}
-            status = 404
-        else:
-            # this sends the password the user put in to the method in our
-            # user class, and which will return True if it is a match to what
-            # what is in our database--authenticating the user--or False if not
-            if user.authenticate(password):
-                session['user_id'] = user.id
-                response_body = user.to_dict()
-                status = 200
-            else:
-                response_body = {'error': 'Invalid username or password'}
-                status = 401
-        return make_response(response_body, status)
+    if not user or not user.authenticate(password):
+        return make_response(jsonify({'error': 'Invalid username or password'}), 401)
 
-api.add_resource(Login, '/login', endpoint='login')
+    session['user_id'] = user.id
+    return make_response(jsonify(user.to_dict()), 200)
+
 
 class Logout(Resource):
     
@@ -95,6 +92,15 @@ class Logout(Resource):
         return {}, 204
     
 api.add_resource(Logout, '/logout', endpoint='logout')
+
+# allowed_endpoints = ['createaccount', 'login', 'logout', 'check_session', 'get_games', 'get_game', 'comments', 'news', 'steamnews', 'games']
+# @app.before_request
+# def check_if_logged_in():
+#     if request.method == "OPTIONS":
+#         # Allow OPTIONS requests to pass through without authentication
+#         return None  # Returning None allows the request to continue to the intended route
+#     if not session.get('user_id') and request.endpoint not in allowed_endpoints:
+#         return {'error': 'Unauthorized'}, 401
 
 
 
@@ -120,12 +126,12 @@ def comments():
         return make_response(jsonify(comments_list), 200)
     elif request.method == 'POST':
         json = request.get_json()
-        # user_id = session.get('user_id')
-        # if user_id is None:
-        #     return make_response(jsonify({'error': 'Unauthorized: you must be logged in to make that request'}), 401)
+        user_id = session.get('user_id')
+        if user_id is None:
+            return make_response(jsonify({'error': 'Unauthorized: you must be logged in to make that request'}), 401)
         
         comment = Comments(
-            # user_id=user_id,
+            user_id=user_id,
             game_id=json['game_id'],
             comment_desc=json['comment']
         )
@@ -214,6 +220,34 @@ def get_news_for_app(appid):
             return make_response(jsonify({'message': 'News updated successfully'}), 200)
         else:
             return make_response(jsonify({'error': 'Failed to fetch news'}), 500)
+
+@app.route('/user', methods=['GET'])
+def get_all_users():
+    users = User.query.all()
+    if not users:
+        return make_response(jsonify({'error': 'No users found'}), 404)
+    
+    user_list = [user.to_dict() for user in users]
+    return make_response(jsonify(user_list), 200)
+
+
+@app.route('/user/<int:id>', methods=['GET', 'DELETE'])
+def get_or_delete_user(id):
+    if request.method == 'GET':
+        user = User.query.get(id)
+        if user is None:
+            return make_response(jsonify({'error': 'User not found'}), 404)
+        return make_response(jsonify(user.to_dict()), 200)
+    elif request.method == 'DELETE':
+        user = User.query.get(id)
+        if user is None:
+            return make_response(jsonify({'error': 'User not found'}), 404)
+        db.session.delete(user)
+        db.session.commit()
+        return make_response({}, 204)
+    else:
+        return make_response(jsonify({'error': 'Method not allowed'}), 405)
+
 
 
 

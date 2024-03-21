@@ -13,7 +13,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
 # generate a secret key by running the following script in terminal:
 # `python -c 'import os; print(os.urandom(16))'`
-app.secret_key = "YOUR SECRET KEY HERE"
+app.secret_key = b"zk\xb9\xf0>\xc2c\xfa\xe0\x12\xb8\xb2'\x8c\xa8\xd1"
 
 # Instantiate db
 db = SQLAlchemy()
@@ -26,4 +26,4 @@ bcrypt = Bcrypt(app)
 api = Api(app)
 
 # Instantiate CORS
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "http://localhost:3000"}}, supports_credentials=True)

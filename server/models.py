@@ -15,7 +15,7 @@ class User(db.Model, SerializerMixin):
     name = db.Column(db.String)
     username = db.Column(db.String)
     _password_hash = db.Column(db.String)
-    prof_image_url = db.Column(db.String, nullable=True)  # Add this column
+    prof_image_url = db.Column(db.String, nullable=True)  
 
     comments = db.relationship('Comments', back_populates='user')
 
