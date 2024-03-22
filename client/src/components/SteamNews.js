@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useUser } from './UserContext';
 
 function SteamNews() {
     const [news, setNews] = useState(null);
@@ -8,6 +9,7 @@ function SteamNews() {
     const [comments, setComments] = useState([]);
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedComment, setEditedComment] = useState('');
+    const { currentUser, setUser } = useUser();
 
     useEffect(() => {
         async function fetchNews() {
@@ -68,7 +70,7 @@ function SteamNews() {
                     },
                     body: JSON.stringify({
                         game_id: news?.game_id,
-                        comment: comment
+                        comment_desc: comment
                     })
                 });
                 if (!commentResponse.ok) {
@@ -79,7 +81,6 @@ function SteamNews() {
                 setComment('');
             } else if (response.status === 401) {
                 console.error('User is not logged in');
-                // Handle unauthorized user (e.g., redirect to login page)
             } else {
                 throw new Error('Failed to check session');
             }
@@ -87,10 +88,6 @@ function SteamNews() {
             console.error('Failed to add comment:', error);
         }
     };
-    
-    
-    
-    
 
     const handleDeleteComment = async (id) => {
         try {
@@ -114,7 +111,7 @@ function SteamNews() {
                     'Content-Type': 'application/json'
                 },
                 body: JSON.stringify({
-                    comment: editedComment
+                    comment_desc: editedComment
                 })
             });
             if (!response.ok) {
@@ -172,6 +169,7 @@ function SteamNews() {
                                 ) : (
                                     <div>
                                         <p>{comment.comment_desc}</p>
+                                        <p>Posted by: {comment.username}</p>
                                         <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
                                         <button onClick={() => handleEditingCommentId(comment.id, comment.comment_desc)}>Edit</button>
                                     </div>

@@ -1,67 +1,74 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { Formik, Form, useField } from 'formik';
+import * as Yup from 'yup';
 import { useNavigate } from 'react-router-dom';
 import { useUser } from './UserContext';
 
-function Login() {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [alertMessage, setAlertMessage] = useState('');
-  const navigate = useNavigate();
-  const { setCurrentUser } = useUser();
+function UserLogin() {
 
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const response = await fetch('/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ username, password }),
-      });
-      if (response.ok) {
-        const userData = await response.json();
-        sessionStorage.setItem('currentUser', JSON.stringify(userData));
-        setCurrentUser(userData);
-        navigate('/');
-        setAlertMessage('Login successful');
-      } else {
-        console.error('Login failed:', response.statusText);
-      }
-    } catch (error) {
-      console.error('Error logging in:', error);
+    const {currentUser, setCurrentUser} = useUser()
+    const navigate = useNavigate()
+
+     const LoginTextInput = ({lable, ...props}) => {
+        
+        const [field, meta] = useField(props)
+        return(
+            <div className='form-group'>
+                <lable htmlFor={props.id || props.name}>{lable}</lable>
+                <input className='text-input' {...field} {...props} />
+                {meta.touched && meta.error ? (
+                    <div className='error'>{meta.error}</div>
+                ) : null}
+            </div>
+        )
     }
-  };
 
-  return (
-    <div>
-      <h2>Login</h2>
-      {alertMessage && <div className="alert">{alertMessage}</div>}
-      <form onSubmit={handleSubmit}>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </label>
-        <br />
-        <button type="submit">Login</button>
-      </form>
-    </div>
-  );
+    return(
+        <div className='login-heading'>
+            <h1>Login</h1>
+            <div> 
+                <Formik
+                    initialValues={{
+                        username: "",
+                        password: ""
+                    }}
+                    validationSchema={Yup.object({
+                        username: Yup.string()
+                        .required('Username is required.'),
+                        password: Yup.string()
+                        .required('Password is required')
+                    })}
+                    onSubmit={(values, { setSubmitting, resetForm }) => {
+                        
+                        fetch(`http://localhost:5555/login`, {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify(values)    
+                        })
+                        .then(res => res.json())
+                        .then(values => {
+                            console.log(values)
+                            setCurrentUser(values)
+                            sessionStorage.setItem('currentUser', JSON.stringify(values))
+                            navigate('/')
+                        })
+                        .then( setSubmitting(false), resetForm() );
+                    }}
+
+                    >
+                        <Form className='login-Form'>
+                            <LoginTextInput type="text" name="username" lable="Username" />
+                            <LoginTextInput type="password" name="password" lable="Password" />
+                            <button type="submit">Login</button>
+                        </Form>
+                </Formik>
+            </div>
+        </div>
+    )
+
+
 }
 
-export default Login;
+export default UserLogin;
