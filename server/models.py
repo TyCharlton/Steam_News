@@ -4,6 +4,7 @@ from sqlalchemy.ext.hybrid import hybrid_property
 from sqlalchemy.orm import validates
 import re
 from config import db
+from sqlalchemy import ForeignKeyConstraint
 
 #Local imports
 from config import db, bcrypt
@@ -61,7 +62,7 @@ class Game(db.Model, SerializerMixin):
     image_url = db.Column(db.String, nullable=True)  
 
     news = db.relationship('News', back_populates='game')
-    comments = db.relationship('Comments', back_populates='game')
+    
 
 
 
@@ -80,8 +81,9 @@ class News (db.Model, SerializerMixin):
     news_date = db.Column(db.DateTime, nullable=False)
 
     game = db.relationship('Game', back_populates='news')
+    comments = db.relationship('Comments', back_populates='news')
 
-    serialize_rules = ('-game.news', )
+    serialize_rules = ('-game.news', '-comments.news')
     
 class Comments(db.Model, SerializerMixin):
     __tablename__ = 'comments'
@@ -89,12 +91,12 @@ class Comments(db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     comment_desc = db.Column(db.String, nullable=False)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    game_id = db.Column(db.Integer, db.ForeignKey('games.id'), nullable=False)
+    news_id = db.Column(db.Integer, db.ForeignKey('news.id'), nullable=False)
 
     user = db.relationship('User', back_populates='comments')
-    game = db.relationship('Game', back_populates='comments')
+    news = db.relationship('News', back_populates='comments')
 
-    serialize_rules = ('-user', '-game')
+    serialize_rules = ('-user.comments', '-news.comments')
 
 
 

@@ -13,9 +13,6 @@ from models import *
 
 
 class CheckSession(Resource):
-    # this allows a user to stay logged in to the site even after refresh
-    # since the user_id will not be removed from the session until a request is
-    # made to /logout
     def get(self):
         user = User.query.filter(User.id == session.get('user_id')).first()
         if not user:
@@ -127,7 +124,7 @@ def comments():
         json = request.get_json()
         comment = Comments(
             user_id=user_id,
-            game_id=json['game_id'],
+            news_id=json['news_id'],
             comment_desc=json['comment_desc']
         )
         db.session.add(comment)

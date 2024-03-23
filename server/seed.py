@@ -44,7 +44,7 @@ def seed_comments(num_comments=10):
         comment = Comments(
             comment_desc=fake.text(),
             user_id=fake.random_int(min=1, max=10),  
-            game_id=fake.random_int(min=1, max=10000),  
+            news_id=fake.random_int(min=1, max=10000),  
         )
         comments.append(comment)
     return comments
