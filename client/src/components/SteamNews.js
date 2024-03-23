@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from './UserContext';
+import { Formik, useField, Form } from 'formik';
+import * as Yup from 'yup';
+import CommentForm from './CommentForm';
 
 function SteamNews() {
     const [news, setNews] = useState(null);
@@ -21,6 +24,8 @@ function SteamNews() {
                 }
                 const data = await response.json();
                 setNews(data);
+                console.log(data.comments);
+                setComments(data.comments);
                 setLoading(false);
             } catch (error) {
                 console.error('Failed to fetch news:', error);
@@ -33,22 +38,22 @@ function SteamNews() {
         }
     }, [searchQuery]);
 
-    useEffect(() => {
-        async function fetchComments() {
-            try {
-                const response = await fetch('http://127.0.0.1:5555/comments');
-                if (!response.ok) {
-                    throw new Error('Failed to fetch comments');
-                }
-                const data = await response.json();
-                setComments(data);
-            } catch (error) {
-                console.error('Failed to fetch comments:', error);
-            }
-        }
+    // useEffect(() => {
+    //     async function fetchComments() {
+    //         try {
+    //             const response = await fetch('http://127.0.0.1:5555/comments');
+    //             if (!response.ok) {
+    //                 throw new Error('Failed to fetch comments');
+    //             }
+    //             const data = await response.json();
+    //             setComments(data);
+    //         } catch (error) {
+    //             console.error('Failed to fetch comments:', error);
+    //         }
+    //     }
 
-        fetchComments();
-    }, []);
+    //     fetchComments();
+    // }, []);
 
     const handleSearch = async (e) => {
         e.preventDefault();
@@ -59,35 +64,60 @@ function SteamNews() {
         }
     };
 
-    const handleAddComment = async () => {
-        try {
-            const response = await fetch('http://localhost:5555/check_session');
-            if (response.ok) {
-                const commentResponse = await fetch('http://localhost:5555/comments', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        game_id: news?.game_id,
-                        comment_desc: comment
-                    })
-                });
-                if (!commentResponse.ok) {
-                    throw new Error('Failed to add comment');
-                }
-                const data = await commentResponse.json();
-                setComments([...comments, data]);
-                setComment('');
-            } else if (response.status === 401) {
-                console.error('User is not logged in');
-            } else {
-                throw new Error('Failed to check session');
-            }
-        } catch (error) {
-            console.error('Failed to add comment:', error);
-        }
-    };
+    // const handleAddComment = async () => {
+    //     try {
+    //         const [checkResponse, commentResponse] = await Promise.all([
+    //             fetch('http://localhost:5555/check_session'),
+    //             fetch('http://localhost:5555/comments', {
+    //                 method: 'POST',
+    //                 headers: {
+    //                     'Content-Type': 'application/json'
+    //                 },
+    //                 body: JSON.stringify({
+    //                     user_id: currentUser.id,
+    //                     game_id: news?.game_id,
+    //                     comment_desc: comment
+    //                 })
+    //             })
+    //         ]);
+    //         if (checkResponse.ok) {
+    //             const data = await commentResponse.json();
+    //             setComments([...comments, data]);
+    //             setComment('');
+    //         } else if (checkResponse.status === 401) {
+    //             console.error('User is not logged in');
+    //         } else {
+    //             throw new Error('Failed to check session');
+    //         }
+    //     } catch (error) {
+    //         console.error('Failed to add comment:', error);
+    //     }
+    // };
+
+    // const handleAddComment = async () => {
+    //     try {
+    //         const response = await fetch('http://127.0.0.1:5555/comments', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json'
+    //             },
+    //             body: JSON.stringify({
+    //                 user_id: currentUser.id,
+    //                 game_id: news?.game_id,
+    //                 comment_desc: comment
+    //             })
+    //         });
+    //         const data = await response.json();
+    //         setComments([...comments, data]);
+    //     } catch (error) {
+    //         console.error('Failed to add comment:', error);
+    //     }
+    // }
+
+    
+
+
+    
 
     const handleDeleteComment = async (id) => {
         try {
@@ -178,9 +208,11 @@ function SteamNews() {
                         ))}
                     </ul>
                     <div>
-                        <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
-                        <button onClick={handleAddComment}>Add Comment</button>
+                        {/* <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
+                        <button onClick={handleAddComment}>Add Comment</button> */}
                     </div>
+                    {console.log(news)}
+                    <CommentForm news={news}/>
                 </div>
             )}
         </div>

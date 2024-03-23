@@ -234,6 +234,8 @@ def get_update_or_delete_user(id):
         return make_response({}, 204)
     else:
         return make_response(jsonify({'error': 'Method not allowed'}), 405)
+    
+
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)

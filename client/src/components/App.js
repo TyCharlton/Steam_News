@@ -11,6 +11,7 @@ import UserContext from './UserContext';
 
 function App() {
   const [currentUser, setCurrentUser] = useState({});
+  
 
   useEffect(() => {
     const userStorage = sessionStorage.getItem('currentUser');
