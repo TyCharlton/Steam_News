@@ -3,7 +3,7 @@ import { Formik, useField, Form } from 'formik';
 import * as Yup from 'yup';
 import { useUser } from './UserContext';
 
-function CommentForm({ news, newComment }) {
+function CommentForm({ news, newComment, comments, setComments }) {
 
     const {currentUser, setCurrentUser} = useUser()
 
@@ -52,6 +52,7 @@ function CommentForm({ news, newComment }) {
                 })
                 .then(data => {
                     newComment(data);
+                    setComments([...comments, data]);
                     setSubmitting(false);
                     resetForm();
                     console.log(data);

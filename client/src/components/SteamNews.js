@@ -90,7 +90,7 @@ function SteamNews() {
                     <a href={news.game_url}>Read more</a>
                     <h3>Comments</h3>
                     <CommentObject news={news} comments={comments} setComments={setComments}/>
-                    <CommentForm news={news} newComment={handleNewComment}/>
+                    <CommentForm news={news} newComment={handleNewComment} comments = {comments} setComments = {setComments}/>
                 </div>
             )}
 
