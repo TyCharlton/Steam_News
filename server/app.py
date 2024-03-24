@@ -81,9 +81,12 @@ class Logout(Resource):
     
 api.add_resource(Logout, '/logout', endpoint='logout')
 
-allowed_endpoints = ['create_account', 'login', 'logout', 'check_session', 'get_games', 'get_game', 'comments', 'news', 'steamnews', 'games', 'get_comments', 'get_news', 'get_steamnews', 'get_news_for_app', 'get_update_or_delete_user']
+allowed_endpoints = ['create_account', 'get', 'check_if_logged_in', 'login', 'logout', 'check_session', 'get_games', 'get_game', 'comments', 'get_comment', 'news', 'steamnews', 'games', 'get_comments', 'get_news', 'get_steamnews', 'get_news_for_app', 'get_update_or_delete_user']
 @app.before_request
 def check_if_logged_in():
+    if request.method == "OPTIONS":
+        # Allow OPTIONS requests to pass through without authentication
+        return None
     if not session.get('user_id') and request.endpoint not in allowed_endpoints:
         return {'error': 'Unauthorized'}, 401
 
@@ -104,26 +107,21 @@ def get_game(id):
 @app.route('/comments', methods=['GET', 'POST'])
 def comments():
     if request.method == 'GET':
-        comments = Comments.query.all()
-        comments_list = []
-        for comment in comments:
-            user = User.query.get(comment.user_id)
-            if user:
-                comments_list.append({
-                    'id': comment.id,
-                    'user_id': comment.user_id,
-                    'username': user.username, 
-                    'comment_desc': comment.comment_desc
-                })
+        comments = db.session.query(Comments, User).join(User, Comments.user_id == User.id).all()
+        comments_list = [{
+            'id': comment.id,
+            'user_id': comment.user_id,
+            'username': user.username,
+            'comment_desc': comment.comment_desc
+        } for comment, user in comments]
         return make_response(jsonify(comments_list), 200)
     elif request.method == 'POST':
-        user_id = session.get('user_id')
-        if user_id is None:
-            return make_response(jsonify({'error': 'Unauthorized: you must be logged in to make that request'}), 401)
-
+        # user_id = session.get('user_id')
+        # if user_id is None:
+        #     return make_response(jsonify({'error': 'Unauthorized: you must be logged in to make that request'}), 401)
         json = request.get_json()
         comment = Comments(
-            user_id=user_id,
+            user_id=json['user_id'],
             news_id=json['news_id'],
             comment_desc=json['comment_desc']
         )
@@ -132,15 +130,19 @@ def comments():
         return make_response(jsonify(comment.to_dict()), 201)
     else:
         return make_response(jsonify({'error': 'Method not allowed'}), 405)
+        
+
 
 @app.route('/comments/<int:id>', methods=['GET', 'PATCH', 'DELETE'])
 def get_comment(id):
+    print("Session user_id:", session.get('user_id'))
     if request.method == 'GET':
-        comment = Comments.query.get(id)
+        comment = Comments.query.filter(id)
         if comment is None:
             return make_response(jsonify({'error': 'Comment not found'}), 404)
         return make_response(jsonify(comment.to_dict()), 200)
     elif request.method == 'PATCH':
+        print("Session user_id:", session.get('user_id'))
         comment = Comments.query.get(id)
         if comment is None:
             return make_response(jsonify({'error': 'Comment not found'}), 404)
