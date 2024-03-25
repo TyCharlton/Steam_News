@@ -11,6 +11,10 @@ function Header() {
     setMenuOpen(!menuOpen);
   };
 
+  const closeMenu = () => {
+    setMenuOpen(false);
+  };
+
   return (
     <div className="header">
       <h1 className="title">
@@ -29,21 +33,21 @@ function Header() {
         <div className="menu">
           <ul>
             <li>
-              <Link to="/">Home</Link>
+              <Link to="/" onClick={closeMenu}>Home</Link>
             </li>
             <li>
-              <Link to="/createaccount">Create Account</Link>
+              <Link to="/createaccount" onClick={closeMenu}>Create Account</Link>
             </li>
             <li>
-              <Link to="/login">Login</Link>
+              <Link to="/login" onClick={closeMenu}>Login</Link>
             </li>
             {currentUser && Object.keys(currentUser).length !== 0 && (
               <>
                 <li>
-                  <Link to="/settings">Settings</Link>
+                  <Link to="/settings" onClick={closeMenu}>Settings</Link>
                 </li>
                 <li>
-                  <Link to="/logout">Logout</Link>
+                  <Link to="/logout" onClick={closeMenu}>Logout</Link>
                 </li>
               </>
             )}
