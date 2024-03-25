@@ -69,9 +69,6 @@ function CommentObject({ news, comments, setComments }) {
     };
     
 
-    
-    // console.log(comments.user.name);
-
     const handleEditingCommentId = (id, initialComment) => {
         setEditingCommentId(id);
         setEditedComment(initialComment);
