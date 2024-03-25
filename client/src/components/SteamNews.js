@@ -3,6 +3,7 @@ import { useUser } from './UserContext';
 import { useLocation } from 'react-router-dom';
 import CommentForm from './CommentForm';
 import CommentObject from './CommentObject';
+import emailjs from 'emailjs-com';
 
 function SteamNews() {
     const [news, setNews] = useState(null);
@@ -48,6 +49,24 @@ function SteamNews() {
         }
     };
 
+    function sendEmail() {
+        const templateParams = {
+            to_email: currentUser.username,
+            article_link: news.game_url
+        };
+    
+        emailjs.send('gmail', 'template_0xsv31s', templateParams, 'JhZs0fRYqAurTV7O8')
+            .then((response) => {
+                console.log('Email sent:', response);
+                alert('Email sent successfully!');
+            })
+            .catch((error) => {
+                console.error('Email error:', error);
+                alert('Failed to send email. Please try again later.');
+            });
+    }
+    
+
     return (
         <div>
             {loading && <p>Loading...</p>}
@@ -61,6 +80,9 @@ function SteamNews() {
                     <h3>Comments</h3>
                     <CommentObject news={news} comments={comments} setComments={setComments}/>
                     <CommentForm news={news} newComment={handleNewComment} comments = {comments} setComments = {setComments}/>
+                    {currentUser && (
+                        <button onClick={sendEmail}>Save for later</button>
+                    )}
                 </div>
             )}
 

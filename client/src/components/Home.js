@@ -27,21 +27,20 @@ function Home() {
 
   return (
     <div>
-      {currentUser.id ? (
-        <div className="search_bar">
-          <form onSubmit={handleSubmit}>
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-            />
-            <button type="submit">Search</button>
-          </form>
-        </div>
-      ) : (
+      <div className="search_bar">
+        <form onSubmit={handleSubmit}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={handleSearchChange}
+          />
+          <button type="submit">Search</button>
+        </form>
+      </div>
+      {!currentUser.id && (
         <div>
-          <p>You must be logged in to search for games.</p>
+          <p></p>
           <button onClick={() => navigate('/createaccount')}>Create Account</button>
           <button onClick={() => navigate('/login')}>Already have an account?</button>
         </div>
