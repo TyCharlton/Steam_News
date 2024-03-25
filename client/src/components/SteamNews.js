@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
 import { useUser } from './UserContext';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
-import * as Yup from 'yup';
+import { useLocation } from 'react-router-dom';
 import CommentForm from './CommentForm';
 import CommentObject from './CommentObject';
 
 function SteamNews() {
     const [news, setNews] = useState(null);
-    const [searchQuery, setSearchQuery] = useState('');
     const [loading, setLoading] = useState(false);
     const [comments, setComments] = useState([]);
     const { currentUser, setUser } = useUser();
+    const location = useLocation();
+    const searchQuery = location.pathname.split('/').pop();
 
     useEffect(() => {
         async function fetchNews() {
@@ -36,14 +36,6 @@ function SteamNews() {
         }
     }, [searchQuery]);
 
-    const handleSearch = async (values, { setSubmitting }) => {
-        try {
-            setSearchQuery(values.app_id);
-        } finally {
-            setSubmitting(false);
-        }
-    };
-
     function handleNewComment(newComment) {
         console.log(newComment); 
         if (newComment && newComment.id) {
@@ -56,30 +48,8 @@ function SteamNews() {
         }
     };
 
-    
-
-    
-
     return (
         <div>
-            <h1>Search News by app_id</h1>
-            <Formik
-                initialValues={{ app_id: '' }}
-                validationSchema={Yup.object({
-                    app_id: Yup.string()
-                       .required('Required')
-                       .matches(/^\d+$/, 'Must be a number'),
-                })}
-                onSubmit={handleSearch}
-            >
-                {({ isSubmitting }) => (
-                    <Form>
-                        <Field type="text" name="app_id" placeholder="Enter app_id" />
-                        <ErrorMessage name="app_id" />
-                        <button type="submit" disabled={isSubmitting}>Search</button>
-                    </Form>
-                )}
-            </Formik>
             {loading && <p>Loading...</p>}
             {news && (
                 <div>
