@@ -13,6 +13,11 @@ function Home() {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+    if (!currentUser.id) {
+      alert('You need to be logged in to search for a game.');
+      return;
+    }
+
     if (!searchQuery.trim() || isNaN(searchQuery)) {
       console.error('Invalid search query:', searchQuery);
     } else {
@@ -22,7 +27,7 @@ function Home() {
 
   return (
     <div>
-      {currentUser ? (
+      {currentUser.id ? (
         <div className="search_bar">
           <form onSubmit={handleSubmit}>
             <input
@@ -35,7 +40,11 @@ function Home() {
           </form>
         </div>
       ) : (
-        <p>You must be logged in to search for games.</p>
+        <div>
+          <p>You must be logged in to search for games.</p>
+          <button onClick={() => navigate('/createaccount')}>Create Account</button>
+          <button onClick={() => navigate('/login')}>Already have an account?</button>
+        </div>
       )}
     </div>
   );
