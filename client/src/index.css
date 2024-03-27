@@ -1,9 +1,11 @@
-:root {
-  --bg: #282c34;
-  --header: #fff;
-  --link: #61dafb;
-  --text: hsla(0, 0%, 100%, 0.88);
-}
-
-
+/* .center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Optional: Adjust this to center vertically within the viewport */
+/* }
+.header-container {
+  display: flex;
+  justify-content: center;
+}  */
 

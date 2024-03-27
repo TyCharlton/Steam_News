@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useUser } from './UserContext';
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field } from 'formik';
 import * as Yup from 'yup';
 
-
-
 function CommentObject({ news, comments, setComments }) {
-
-    const { currentUser, setUser } = useUser();
+    const { currentUser } = useUser();
     const [editingCommentId, setEditingCommentId] = useState(null);
     const [editedComment, setEditedComment] = useState('');
-
-    console.log(comments);
-    console.log(editingCommentId);
-    console.log(editedComment);
-    console.log(currentUser);
-    console.log(news);
-
-    let id = comments.map(comment => comment.id);
-    console.log(id);
 
     const handleDeleteComment = async (id) => {
         try {
@@ -28,13 +16,11 @@ function CommentObject({ news, comments, setComments }) {
             if (!response.ok) {
                 throw new Error('Failed to delete comment');
             }
-            setComments(comments.filter(comment => comment.id!== id));
+            setComments(comments.filter(comment => comment.id !== id));
         } catch (error) {
             console.error('Failed to delete comment:', error);
         }
     };
-
-
 
     const handleUpdateComment = async (id, editedComment) => {
         try {
@@ -67,7 +53,6 @@ function CommentObject({ news, comments, setComments }) {
             setEditedComment('');
         }
     };
-    
 
     const handleEditingCommentId = (id, initialComment) => {
         setEditingCommentId(id);
@@ -96,18 +81,17 @@ function CommentObject({ news, comments, setComments }) {
                             <div>
                                 <p>{comment.comment_desc}</p>
                                 <p>Posted by: {comment.user.name}</p>
-                                 {/* Check if user is logged in, then conditionally display edit and delete button */}
-                                 {currentUser.id === comment.user_id ? (
-                                     <div>
-                                         <button onClick={() => handleEditingCommentId(comment.id, comment.comment_desc)}>Edit</button>
-                                         <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
-                                     </div>
-                                 ) : (
-                                     <div>
-                                         <p></p>
-                                     </div>
-                                 )}
-         
+                                <p>Posted on: {new Date(comment.created_at).toLocaleString()}</p>
+                                {currentUser.id === comment.user_id ? (
+                                    <div>
+                                        <button onClick={() => handleEditingCommentId(comment.id, comment.comment_desc)}>Edit</button>
+                                        <button onClick={() => handleDeleteComment(comment.id)}>Delete</button>
+                                    </div>
+                                ) : (
+                                    <div>
+                                        <p></p>
+                                    </div>
+                                )}
                             </div>
                         )}
                     </li>
@@ -115,12 +99,6 @@ function CommentObject({ news, comments, setComments }) {
             </ul>
         </div>
     )
-    
-
-
-
-
-
 }
 
 export default CommentObject;
