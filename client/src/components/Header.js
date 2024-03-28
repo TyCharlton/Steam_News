@@ -26,8 +26,10 @@ function Header() {
           <span id="subtitle" style={{ fontSize: '0.5em', display: 'block' }}>
             "Powered by Steam API"
           </span>
+          {currentUser && Object.keys(currentUser).length !== 0 && (
+            <span style={{ marginTop: '10px' }}>Hi, {currentUser.name}</span>
+          )}
         </h1>
-        {currentUser && Object.keys(currentUser).length !== 0 && <div>Hi, {currentUser.name}</div>}
         <div className="menu_icon" onClick={toggleMenu}>
           <GiHamburgerMenu />
         </div>

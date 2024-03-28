@@ -71,19 +71,25 @@ function SteamNews() {
         <div>
             {loading && <p>Loading...</p>}
             {news && (
-                <div>
-                    <h2>{news.news_title}</h2>
-                    <p>{news.news_desc}</p>
-                    <p>Author: {news.news_author}</p>
-                    <p>Date: {new Date(news.news_date).toLocaleString()}</p>
-                    <a href={news.game_url}>Read more</a>
-                    <h3>Comments</h3>
-                    <CommentObject news={news} comments={comments} setComments={setComments}/>
-                    <CommentForm news={news} newComment={handleNewComment} comments = {comments} setComments = {setComments}/>
-                    {currentUser && (
-                        <button onClick={sendEmail}>Save for later</button>
-                    )}
+                <div className="steam-news">
+                <div className="news-container">
+                  <h2 className="news-title">{news.news_title}</h2>
+                  {news.image_url && <img src={news.image_url} alt="News Image" />}
+                  <p>{news.news_desc}</p>
+                  <p className="news-author">Author: {news.news_author}</p>
+                  <p className="news-date">Date: {new Date(news.news_date).toLocaleString()}</p>
+                  <a href={news.game_url}>Read more</a>
                 </div>
+                <div className="comments-container">
+                  <h3>Comments</h3>
+                  <CommentObject news={news} comments={comments} setComments={setComments}/>
+                  <CommentForm news={news} newComment={handleNewComment} comments={comments} setComments={setComments}/>
+                </div>
+                {currentUser && (
+                  <button className="save-button" onClick={sendEmail}>Save for later</button>
+                )}
+              </div>
+              
             )}
 
         </div>

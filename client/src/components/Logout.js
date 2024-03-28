@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import UserContext from './UserContext';
-
+import "../index.css";
 function Logout() {
   const { currentUser, setCurrentUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -18,7 +18,7 @@ function Logout() {
   };
 
   return (
-    <button onClick={handleLogout} style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}>
+    <button className="logout-button" onClick={handleLogout}>
       Logout
     </button>
   );

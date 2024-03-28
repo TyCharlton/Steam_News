@@ -27,7 +27,8 @@ function Home() {
   };
 
   return (
-    <div className="center">
+    <div className="center home">
+      <h1>Welcome to Steam News</h1>
       <div className="search_bar">
         <form onSubmit={handleSubmit}>
           <input
@@ -48,6 +49,8 @@ function Home() {
       )}
     </div>
   );
+
 }
+
 
 export default Home;

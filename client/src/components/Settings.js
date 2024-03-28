@@ -28,30 +28,32 @@ function Settings() {
     }
   };
 
-  return (
-    <div>
-      <h1>Settings</h1>
-      <form onSubmit={handleUpdateUserInfo}>
-        <label>
-          Name:
-          <input
-            type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-          />
-        </label>
-        <label>
-          Profile Image URL:
-          <input
-            type="text"
-            value={profImageUrl}
-            onChange={(e) => setProfImageUrl(e.target.value)}
-          />
-        </label>
-        <button type="submit">Update</button>
-      </form>
-    </div>
-  );
+  // Settings component
+return (
+  <div className="settings-container">
+    <h1>Settings</h1>
+    <form className="settings-form" onSubmit={handleUpdateUserInfo}>
+      <label>
+        Name:
+        <input
+          type="text"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+      </label>
+      <label>
+        Profile Image URL:
+        <input
+          type="text"
+          value={profImageUrl}
+          onChange={(e) => setProfImageUrl(e.target.value)}
+        />
+      </label>
+      <button type="submit">Update</button>
+    </form>
+  </div>
+);
+
 }
 
 export default Settings;

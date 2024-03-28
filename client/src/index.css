@@ -1,11 +1,520 @@
-/* .center {
+/* index.css */
+
+/* Global styles */
+
+/* Home component styles */
+.home {
+  color: rgb(198, 212, 223);
+  display: block;
+  font-family: 'Arial', 'Helvetica', sans-serif;
+  font-size: 12px;
+  height: 412.5px;
+  margin-bottom: 0px;
+  margin-left: 125.445px;
+  margin-right: 125.445px;
+  margin-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 234px;
+  padding-right: 234px;
+  padding-top: 0px;
+  position: relative;
+  transition-behavior: normal;
+  transition-delay: 0s;
+  transition-duration: 0.25s;
+  transition-property: padding;
+  transition-timing-function: ease;
+  unicode-bidi: isolate;
+  width: 940px;
+}
+
+.home h1 {
+  font-family: 'Motiva Sans', sans-serif;
+  font-weight: normal;
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+/* Update existing styles */
+.center {
+  justify-content: flex-start; /* Update justify-content to align content to the start */
+}
+
+.search_bar {
+  margin-bottom: 0px; /* Update margin-bottom to match the Steam style */
+}
+
+.search_bar form {
+  border: none; /* Update border to match the Steam style */
+}
+
+.search_bar input {
+  padding: 0px; /* Update padding to match the Steam style */
+  font-size: 12px; /* Update font-size to match the Steam style */
+}
+
+.search_bar button {
+  padding: 0px; /* Update padding to match the Steam style */
+  margin-top: 0px; /* Update margin-top to match the Steam style */
+  background-color: transparent; /* Update background-color to match the Steam style */
+  color: rgb(198, 212, 223); /* Update color to match the Steam style */
+  border: none; /* Update border to match the Steam style */
+  cursor: pointer;
+}
+
+
+/* Remove existing button styles */
+button {
+  margin-top: 0px;
+  padding: 0px;
+  background-color: transparent;
+  color: inherit;
+  border: none;
+  border-radius: 0px;
+  cursor: pointer;
+}
+
+/* Remove existing button hover styles */
+button:hover {
+  background-color: transparent;
+}
+
+
+body {
+  font-family: 'Futura', sans-serif;
+}
+
+.center {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh; /* Optional: Adjust this to center vertically within the viewport */
-/* }
-.header-container {
+  height: 100vh;
+  flex-direction: column;
+}
+
+.search_bar {
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.search_bar form {
+  display: flex;
+  align-items: center;
+  border: 5px solid #3e3e3e;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.search_bar input {
+  flex: 1;
+  padding: 10px; /* Increase padding to make the input field bigger */
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.search_bar button {
+  padding: 6px 10px; /* Adjust padding to make the button slightly smaller */
+  margin-top: -3px; /* Adjust margin-top to move the button up */
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+}
+
+
+
+.search_bar button:hover {
+  background-color: #3e3e3e;
+}
+
+/* Style for buttons */
+button {
+  margin-top: 17px;
+  padding: 8px 12px;
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e3e3e;
+}
+
+/* Header styling */
+.header {
+  background-color: #171a21;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between; /* Align items to the start and end of the header */
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.menu-icon {
+  cursor: pointer;
+}
+
+.navbar {
+  display: flex;
+}
+
+.navbar a {
+  margin-left: 20px;
+  color: #c6d4df;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* index.css */
+
+/* Existing styles */
+
+/* Centering and search bar styles */
+
+.center {
   display: flex;
   justify-content: center;
-}  */
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+.search_bar {
+  margin-bottom: 20px;
+  width: 50%;
+}
+
+.search_bar form {
+  display: flex;
+  align-items: center;
+  border: 1px solid #3e3e3e;
+  border-radius: 2px;
+  overflow: hidden;
+}
+
+.search_bar input {
+  flex: 1;
+  padding: 8px;
+  border: none;
+  outline: none;
+  font-size: 14px;
+}
+
+.search_bar button {
+  padding: 8px 12px;
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  border-radius: 0 2px 2px 0;
+  cursor: pointer;
+}
+
+.search_bar button:hover {
+  background-color: #3e3e3e;
+}
+
+/* Style for buttons */
+button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+button:hover {
+  background-color: #3e3e3e;
+}
+
+/* Header styling */
+.header {
+  background-color: #171a21;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between; /* Align items to the start and end of the header */
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.menu-icon {
+  cursor: pointer;
+}
+
+
+.navbar {
+  display: flex;
+}
+
+.navbar a {
+  margin-left: 20px;
+  color: #c6d4df;
+  text-decoration: none;
+}
+
+.navbar a:hover {
+  text-decoration: underline;
+}
+
+/* SteamNews component styles */
+
+/* Add styles specific to your SteamNews component here */
+
+/* index.css */
+
+/* Existing styles */
+
+/* Centering and search bar styles */
+
+/* Header styling */
+
+/* SteamNews component styles */
+
+/* index.css */
+
+/* Existing styles */
+
+/* Centering and search bar styles */
+
+/* Header styling */
+
+/* SteamNews component styles */
+
+.steam-news {
+  margin: 20px;
+}
+
+.steam-news h2 {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.steam-news p {
+  margin-bottom: 10px;
+}
+
+.steam-news a {
+  color: #4183c4; /* Steam blue */
+  text-decoration: none;
+  margin-right: 10px;
+}
+
+.steam-news a:hover {
+  text-decoration: underline;
+}
+
+.steam-news .comments {
+  margin-top: 20px;
+}
+
+.steam-news .comments h3 {
+  font-size: 20px;
+  margin-bottom: 10px;
+}
+
+.steam-news .save-button {
+  margin-top: 20px;
+  padding: 8px 12px;
+  background-color: #5a5a5a;
+  color: white;
+  border: none;
+  border-radius: 2px;
+  cursor: pointer;
+}
+
+.steam-news .save-button:hover {
+  background-color: #3e3e3e;
+}
+
+.steam-news .news-container {
+  background-color: #f5f5f5; /* Light grey background */
+  border-radius: 5px;
+  padding: 20px;
+}
+
+.steam-news .news-container img {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: 20px;
+}
+
+.steam-news .news-container .news-title {
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+.steam-news .news-container .news-author {
+  font-style: italic;
+  color: #666;
+}
+
+.steam-news .news-container .news-date {
+  color: #666;
+}
+
+.steam-news .comments-container {
+  margin-top: 20px;
+}
+
+.steam-news .comment {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 10px;
+  margin-bottom: 10px;
+}
+
+.steam-news .comment .comment-author {
+  font-weight: bold;
+}
+
+.steam-news .comment .comment-text {
+  margin-top: 5px;
+}
+
+/* index.css */
+
+/* Existing styles */
+
+/* UserLogin component styles */
+
+.login-heading {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+
+.login-heading h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  font-weight: bold;
+}
+
+.text-input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+}
+
+.error {
+  color: #f00;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.login-Form {
+  width: 300px;
+}
+
+button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #5c940d; /* Steam green */
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+button[type="submit"]:hover {
+  background-color: #4c7c0c; /* Darker green on hover */
+}
+
+/* index.css */
+
+/* Existing styles */
+
+/* Settings component styles */
+
+.settings-container {
+  margin: 20px;
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  background-color: #f5f5f5;
+}
+
+.settings-container h1 {
+  font-size: 24px;
+  margin-bottom: 20px;
+}
+
+.settings-form {
+  width: 300px;
+}
+
+.settings-form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+.settings-form input {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+
+.settings-form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #5c940d; /* Steam green */
+  color: #fff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 16px;
+  text-transform: uppercase;
+}
+
+.settings-form button[type="submit"]:hover {
+  background-color: #4c7c0c; /* Darker green on hover */
+}
+
+/* Logout component styles */
+
+.logout-button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  color: #fff;
+  font-size: 14px;
+}
+
+.logout-button:hover {
+  text-decoration: underline;
+}
+
 
