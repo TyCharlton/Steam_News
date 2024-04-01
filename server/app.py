@@ -6,10 +6,12 @@ from datetime import datetime
 import os
 import requests
 from flask_cors import CORS
+import pytz
 
 # Local imports
 from config import app, db, api
 from models import *
+from datetime import datetime
 
 
 class CheckSession(Resource):
@@ -168,19 +170,21 @@ def get_news():
     response = make_response(jsonify(news_data), 200)
     return response
 
+
 @app.route('/news/<int:appid>', methods=['GET'])
 def get_news_for_app(appid):
+    eastern = pytz.timezone('America/New_York')
     news = News.query.filter_by(app_id=appid).order_by(News.news_date.desc()).first()
     if news:
         return make_response(jsonify(news.to_dict()), 200)
     else:
-        url = f'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count=3&maxlength=300&format=json'
+        url = f'https://api.steampowered.com/ISteamNews/GetNewsForApp/v0002/?appid={appid}&count=3&maxlength=100000&format=json'
         response = requests.get(url)
         
         if response.status_code == 200:
             news_data = response.json().get('appnews', {}).get('newsitems', [])
             for item in news_data:
-                news_date = datetime.utcfromtimestamp(item.get('date', 0)) 
+                news_date = datetime.fromtimestamp(item.get('date', 0), eastern) 
                 game = Game.query.filter_by(appid=appid).first()
                 if game:
                     existing_news = News.query.filter_by(
@@ -193,6 +197,7 @@ def get_news_for_app(appid):
                         news = News(
                             app_id=appid,
                             game_id=game.id, 
+                            game_title=game.game_title,  # Set game_title here
                             news_title=item.get('title', ''),
                             news_desc=item.get('contents', ''),
                             game_url=item.get('url', ''),
@@ -205,6 +210,11 @@ def get_news_for_app(appid):
             return make_response(jsonify({'message': 'News updated successfully'}), 200)
         else:
             return make_response(jsonify({'error': 'Failed to fetch news'}), 500)
+
+
+
+
+
 
 @app.route('/user', methods=['GET'])
 def get_all_users():

@@ -23,7 +23,6 @@ function SteamNews() {
                 }
                 const data = await response.json();
                 setNews(data);
-                console.log(data.comments);
                 setComments(data.comments);
                 setLoading(false);
             } catch (error) {
@@ -38,7 +37,6 @@ function SteamNews() {
     }, [searchQuery]);
 
     function handleNewComment(newComment) {
-        console.log(newComment); 
         if (newComment && newComment.id) {
             setNews(prevNew => ({
                 ...prevNew,
@@ -65,6 +63,13 @@ function SteamNews() {
                 alert('Failed to send email. Please try again later.');
             });
     }
+
+    function renderImagesFromDesc(newsDesc) {
+        const imageRegex = /{STEAM_CLAN_IMAGE}\/\d+\/[a-f0-9]+.png/g;
+        const renderedDesc = newsDesc.replace(imageRegex, '');
+        return { __html: renderedDesc };
+    }
+    
     
 
     return (
@@ -72,26 +77,24 @@ function SteamNews() {
             {loading && <p>Loading...</p>}
             {news && (
                 <div className="steam-news">
-                <div className="news-container">
-                  <h2 className="news-title">{news.news_title}</h2>
-                  {news.image_url && <img src={news.image_url} alt="News Image" />}
-                  <p>{news.news_desc}</p>
-                  <p className="news-author">Author: {news.news_author}</p>
-                  <p className="news-date">Date: {new Date(news.news_date).toLocaleString()}</p>
-                  <a href={news.game_url}>Read more</a>
+                    <div className="news-container">
+                        <h2 className="game-title">{news.game_title}</h2>
+                        <h2 className="news-title">{news.news_title}</h2>
+                        <div dangerouslySetInnerHTML={renderImagesFromDesc(news.news_desc)}></div>
+                        <p className="news-author">Author: {news.news_author}</p>
+                        <p className="news-date">Date: {new Date(news.news_date).toLocaleString()}</p>
+                        <a href={news.game_url}>Read more</a>
+                    </div>
+                    <div className="comments-container">
+                        <h3>Comments</h3>
+                        <CommentObject news={news} comments={comments} setComments={setComments}/>
+                        <CommentForm news={news} newComment={handleNewComment} comments={comments} setComments={setComments}/>
+                    </div>
+                    {currentUser && (
+                        <button className="save-button" onClick={sendEmail}>Save for later</button>
+                    )}
                 </div>
-                <div className="comments-container">
-                  <h3>Comments</h3>
-                  <CommentObject news={news} comments={comments} setComments={setComments}/>
-                  <CommentForm news={news} newComment={handleNewComment} comments={comments} setComments={setComments}/>
-                </div>
-                {currentUser && (
-                  <button className="save-button" onClick={sendEmail}>Save for later</button>
-                )}
-              </div>
-              
             )}
-
         </div>
     );
 }

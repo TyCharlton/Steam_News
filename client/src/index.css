@@ -1,6 +1,58 @@
 /* index.css */
 
 /* Global styles */
+/* index.css */
+
+/* Header styling */
+
+/* index.css */
+
+/* Header styling */
+
+
+
+.header {
+  position: relative; /* Set position to relative */
+  background-color: #171a21;
+  color: white;
+  padding: 10px 20px;
+  display: flex;
+  justify-content: space-between; /* Align items to the start and end of the header */
+  align-items: center;
+}
+
+.header h1 {
+  font-size: 24px;
+  margin: 0;
+}
+
+.menu-icon {
+  cursor: pointer;
+  position: absolute; 
+  top: 10px; /* Position the icon at the top */
+  right: 20px; /* Position the icon at the right */
+}
+
+/* Menu styling */
+.menu {
+  position: absolute; /* Set position to absolute */
+  top: 50px; /* Position the menu below the header */
+  right: 20px; /* Position the menu at the right */
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  display: none; /* Hide the menu by default */
+}
+
+.menu.show {
+  display: block; /* Show the menu when the show class is applied */
+}
+
+
+
+/* Existing styles */
+
 
 /* Home component styles */
 .home {
@@ -258,6 +310,11 @@ button:hover {
 .menu-icon {
   cursor: pointer;
 }
+
+.menu-icon:hover {
+  cursor: pointer;
+}
+
 
 
 .navbar {

@@ -1,8 +1,8 @@
-"""New
+"""added game_title to news model./Hopefully final DB
 
-Revision ID: e388d926900c
+Revision ID: 1532062ee1b7
 Revises: 
-Create Date: 2024-03-23 17:41:02.162385
+Create Date: 2024-03-26 18:00:53.742834
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = 'e388d926900c'
+revision = '1532062ee1b7'
 down_revision = None
 branch_labels = None
 depends_on = None
@@ -37,6 +37,7 @@ def upgrade():
     sa.Column('id', sa.Integer(), nullable=False),
     sa.Column('app_id', sa.Integer(), nullable=False),
     sa.Column('game_id', sa.Integer(), nullable=False),
+    sa.Column('game_title', sa.String(), nullable=True),
     sa.Column('news_title', sa.String(), nullable=False),
     sa.Column('news_desc', sa.String(), nullable=False),
     sa.Column('game_url', sa.String(), nullable=False),
@@ -50,6 +51,7 @@ def upgrade():
     sa.Column('comment_desc', sa.String(), nullable=False),
     sa.Column('user_id', sa.Integer(), nullable=False),
     sa.Column('news_id', sa.Integer(), nullable=False),
+    sa.Column('created_at', sa.DateTime(), server_default=sa.text('(CURRENT_TIMESTAMP)'), nullable=True),
     sa.ForeignKeyConstraint(['news_id'], ['news.id'], ),
     sa.ForeignKeyConstraint(['user_id'], ['users.id'], ),
     sa.PrimaryKeyConstraint('id')
