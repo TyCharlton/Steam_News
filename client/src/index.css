@@ -12,7 +12,7 @@
 
 
 .header {
-  position: relative; /* Set position to relative */
+  position: relative; 
   background-color: #171a21;
   color: white;
   padding: 10px 20px;
@@ -35,9 +35,9 @@
 
 /* Menu styling */
 .menu {
-  position: absolute; /* Set position to absolute */
+  position: absolute; 
   top: 50px; /* Position the menu below the header */
-  right: 20px; /* Position the menu at the right */
+  right: 20px; 
   background-color: #fff;
   border: 1px solid #ccc;
   border-radius: 5px;
