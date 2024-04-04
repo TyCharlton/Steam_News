@@ -17,7 +17,7 @@
   color: white;
   padding: 10px 20px;
   display: flex;
-  justify-content: space-between; /* Align items to the start and end of the header */
+  justify-content: space-between; /* Align items to the s*/
   align-items: center;
 }
 
